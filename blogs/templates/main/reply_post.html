@@ -1,0 +1,48 @@
+{% extends'main/basic.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block title %}回复{{ replied.author.username }}的帖子{% endblock %}
+
+{% block header %}
+    <div class="page-header">
+        <p><span class="oi oi-home text-muted"></span>
+            <a href="{{ url_for('main.index')}}" class="text-dark text-muted">论坛首页</a>&nbsp;&nbsp;
+            <small class="oi oi-chevron-left text-muted"></small>&nbsp;
+            <a href="{{ url_for('main.show_group', group_id=replied.topic.group_id) }}" class="text-dark text-muted">
+                {{ replied.topic.group.name }}</a>&nbsp;&nbsp;
+            <small class="oi oi-chevron-left text-muted"></small>&nbsp;
+            <a href="{{ url_for('main.show_topic', topic_id=replied.topic_id) }}" class="text-dark text-muted">
+                {{ replied.topic.name }}</a>&nbsp;&nbsp;
+            <small class="oi oi-chevron-left text-muted"></small>&nbsp;
+            <a href="{{ url_for('main.show_post', post_id=replied.id) }}" class="text-dark text-muted">
+                {{ replied.title }}</a>
+        </p>
+    </div>
+{% endblock %}
+
+{% block base_content %}
+    <div class="card w-100 bg-light">
+        <h4 class="card-header">回复{{ replied.author.username }}的帖子</h4>
+        <div class="card-body">
+            {{ render_form(form) }}
+            <br>
+            <a class="btn btn-outline-primary adjunct" href="#!"><span class="oi oi-paperclip"></span> 附件</a>
+            <form enctype="multipart/form-data" id="upload-fm" hidden>
+                <input type="file" name="file" id="upload_input" value="">
+            </form>
+            <div class="clear_float"></div>
+        </div>
+        <div class="card">
+            <div class="card-body border_grey">
+                <span class="float-right">{{ moment(replied.timestamp).format('llll') }}</span>
+                由{{ replied.author.username }}<br>
+                {{ replied.body|striptags|truncate(150,ture,'......') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+{% endblock %}

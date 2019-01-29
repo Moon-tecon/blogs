@@ -1,0 +1,35 @@
+{% extends'main/basic.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block title %}发表新主题{% endblock %}
+
+{% block header %}
+    <div class="page-header">
+        <p><span class="oi oi-home text-muted"></span>
+            <a href="{{ url_for('main.index')}}" class="text-dark text-muted">论坛首页</a>&nbsp;&nbsp;
+            <small class="oi oi-chevron-left text-muted"></small>&nbsp;
+            <a href="{{ url_for('main.show_group', group_id=group.id) }}" class="text-dark text-muted">
+                {{ group.name }}</a>&nbsp;&nbsp;
+        </p>
+    </div>
+{% endblock %}
+
+{% block base_content %}
+    <div class="card w-100 bg-light">
+        <h4 class="card-header">{{ group.name }}发表新主题</h4>
+        <div class="card-body">
+            {{ render_form(form) }}
+            <br>
+            <a class="btn btn-primary adjunct" href="#!"><span class="oi oi-paperclip"></span> 附件</a>
+            <form enctype="multipart/form-data" id="upload-fm" hidden>
+                <input type="file" name="file" id="upload_input" value="">
+            </form>
+            <div class="clear_float"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+{% endblock %}
