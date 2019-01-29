@@ -41,7 +41,7 @@ def edit_profile():
         current_user.position = form.position.data
         db.session.commit()
         flash('信息已更新', 'success')
-        return redirect(url_for('.index', sign=current_user.sign))
+        return redirect(url_for('.index', username=current_user.username))
     form.username.data = current_user.username
     form.name.data = current_user.name
     form.phone.data = current_user.phone
@@ -101,7 +101,7 @@ def change_password():
         current_user.set_password(form.password.data)
         db.session.commit()
         flash('密码已更新', 'success')
-        return redirect(url_for('.index', sign=current_user.sign))
+        return redirect(url_for('.index', username=current_user.username))
     form.old_password.data = ''
     return render_template('user/setting/change_password.html', form=form)
 
@@ -116,7 +116,7 @@ def notification_setting():
         current_user.receive_notice_notification = form.receive_notice_notification.data
         db.session.commit()
         flash('通知设置已更新', 'success')
-        return redirect(url_for('user.index', sign=current_user.sign))
+        return redirect(url_for('user.index', username=current_user.username))
     form.receive_collect_notification.data = current_user.receive_collect_notification
     form.receive_post_notification.data = current_user.receive_post_notification
     form.receive_notice_notification.data = current_user.receive_notice_notification
@@ -188,7 +188,7 @@ def change_email_request():
         token = generate_token(user=current_user, operation=Operations.CHANGE_EMAIL, new_email=form.email.data.lower())
         send_user_confirm_email(to=form.email.data, user=current_user, token=token)
         flash('确认邮件已发送，请检查你的邮箱。', 'info')
-        return redirect(url_for('.index', sign=current_user.sign))
+        return redirect(url_for('.index', username=current_user.username))
     return render_template('user/setting/change_email.html', form=form)
 
 
@@ -197,7 +197,7 @@ def change_email_request():
 def change_email(token):
     if validate_token(user=current_user, token=token, operation=Operations.CHANGE_EMAIL):
         flash('邮箱已更新。', 'success')
-        return redirect(url_for('.index', sign=current_user.sign))
+        return redirect(url_for('.index', username=current_user.username))
     else:
         flash('无效或者过时的令牌', 'warning')
         return redirect(url_for('.change_email_request'))

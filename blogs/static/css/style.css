@@ -164,3 +164,8 @@ nav {
 .text-blue {
     color: blue;
 }
+
+.photo_card {
+    max-width: 300px;
+    border: 0;
+}

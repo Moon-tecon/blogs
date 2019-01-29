@@ -55,5 +55,5 @@ class ChangeEmailForm(FlaskForm):
     submit = SubmitField('提交')
 
     def validate_email(self, field):
-        if field.data != self.user.email and User.query.filter_by(email=field.data).first():
+        if field.data != current_user.email and User.query.filter_by(email=field.data).first():
             raise ValidationError('此邮箱已注册过本论坛。')

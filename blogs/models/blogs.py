@@ -1,13 +1,11 @@
 from blogs.extensions import db
 from datetime import datetime
 import os
-import time
 import uuid
 from flask import current_app
 from flask_avatars import Identicon
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from flask.sessions import SessionMixin
 
 from blogs.extensions import whooshee
 
