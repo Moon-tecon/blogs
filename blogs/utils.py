@@ -83,8 +83,10 @@ def validate_token(user, token, operation, new_password=None):
 def flash_errors(form):
     for field, errors in form.errors.items():
         for error in errors:
-            flash(u"错误发生在 %s 表单 - %s" % (
-                getattr(form, field).label.text, error), 'error')
+            flash(u"错误发生在<%s>表单 - %s" % (
+                getattr(form, field).label.text,
+                error
+            ), 'danger')
 
 
 def rename_image(old_filename):

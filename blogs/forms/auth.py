@@ -30,6 +30,7 @@ class RegisterForm(FlaskForm):
     username = StringField('用户名*', validators=[DataRequired(), Length(1, 30),
                                                Regexp('^[a-zA-Z0-9]*$',
                                                       message='用户名只能由a-z,A-Z和0-9组成。')])
+    name = StringField('真实姓名*', validators=[DataRequired(), Length(1, 30)])
     email = StringField('Email*', validators=[DataRequired(), Length(1, 254), Email()])
     company = StringField('公司名称*', validators=[DataRequired(), Length(1, 30)],
                           render_kw={'placeholder': '请输入公司名称，以便确认账号'})

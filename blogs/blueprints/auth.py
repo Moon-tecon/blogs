@@ -85,10 +85,11 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         username = form.username.data
+        name = form.name.data
         email = form.email.data.lower()  # 小写处理
         password = form.password.data
         company = form.company.data
-        user = User(username=username, email=email, company=company)
+        user = User(username=username, email=email, company=company, name=name)
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
