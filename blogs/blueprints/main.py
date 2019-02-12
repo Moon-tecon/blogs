@@ -490,8 +490,8 @@ def search():
     if q == '':
         flash('请输入要搜索内容的关键字', 'warning')
         return redirect_back()
-    if len(q)<3:
-        flash('输入字符数不能少于3', 'warning')
+    if len(q)<2:
+        flash('输入字符数不能少于2', 'warning')
         return redirect_back()
 
     category = request.args.get('category', 'topic')

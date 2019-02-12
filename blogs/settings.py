@@ -55,6 +55,8 @@ class BaseConfig(object):
     NEWS_PER_PAGE = 9
     MANAGE_NEWS_PER_PAGE = 20
 
+    WHOOSHEE_MIN_STRING_LEN = 2  #搜索限制字符设定
+
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-dev.db')
