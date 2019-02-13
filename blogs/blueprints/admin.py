@@ -107,6 +107,7 @@ def confirm(username):
     user = User.query.filter_by(username=username).first()
     user.confirmed = True
     db.session.commit()
+    send_notice_email(user)
     return redirect_back()
 
 

@@ -16,6 +16,7 @@ flask-mail = "*"
 flask-avatars = "*"
 flask-uploads = "*"
 flask-cors = "*"
+flask-dropzone = "*"
 
 [dev-packages]
 watchdog = "*"
