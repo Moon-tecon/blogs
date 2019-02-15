@@ -1,12 +1,12 @@
 from flask import Blueprint, flash, redirect, url_for, request, current_app, render_template
-from flask_login import login_required, current_user
+from flask_login import login_required
 
 from blogs.models.blogs import User, Post, Topic, Group, Status, Role
 from blogs.forms.admin import NewUserForm, NewGroupForm, MigrateForm, EditGroupForm, EditProfileAdminForm
 from blogs.extensions import db
 from blogs.utils import redirect_back
 from blogs.emails import send_notice_email
-from blogs.decorators import admin_required, permission_required, confirm_required
+from blogs.decorators import admin_required, permission_required
 
 admin_bp = Blueprint('admin', __name__)
 

@@ -48,81 +48,6 @@ $(function () {
         }, 3000);
     }
 
-    $('#post-tr').click(function () {
-        $(this).hide();
-        $('#new_post').show();
-        $('.fm_header').hide();
-        $('#post_input').focus().val('');
-    });
-
-    $('.adjunct').click(function () {
-        $('#upload_input').click()
-    });
-
-    $("#post-new").click(function () {
-        $("#post-tr").click()
-    });
-
-    /*function show_filename(filename) {
-        $.ajax({
-            type:'GET',
-            url:'/'+filename,
-            dataType:'html',
-            success:function (filename) {
-                console.log('get filename success');
-                $('#upload_input').parent().next().append(filename);
-            }
-        });
-    }*/
-
-    $('#upload_input').change(function () {
-        var fileSize = document.getElementById("upload_input").files[0].size;
-        var size = fileSize/(1024*1024);
-        var filemaxsize = 16;    /*验证上传的文件大小*/
-        if (size>filemaxsize){
-            toast('附件不能大于'+filemaxsize+'M!', 'error');
-            return;
-        }
-
-        var formData = new FormData($('#upload-fm')[0]);
-        $.ajax({
-            type: 'post',
-            url: '/ajax/upload/',
-            data: formData,
-            timeout : 300000,
-            async: false,
-            processData: false,
-            contentType: false,
-            success: function (filename) {
-                console.log('upload-success');
-                $.ajax({
-                    type:'GET',
-                    url:'/ajax/'+filename,
-                    dataType:'html',
-                    success:function (filename) {
-                        console.log('get filename success');
-                        $('#upload_input').parent().next().append(filename);
-                    }
-                });
-            }
-        });
-    });
-
-    $(document).on('click', '#del-btn', function () {
-        var $input = $('#upload_input');
-        var $item = $(this).parent();
-
-        $input.focus();
-        $.ajax({
-            type:'DELETE',
-            url:$(this).data('href'),
-            success:function () {
-                console.log('deleted-success');
-                $item.remove();
-            }
-        })
-    });
-
     function update_notifications_count() {
         var $el = $('#notification-badge');
         $.ajax({
@@ -200,15 +125,4 @@ $(function () {
 
     $("[data-toggle='tooltip']").tooltip({title: moment($(this).data('timestamp')).format('lll')});
 
-    $('#comment-btn').click(function () {
-        $.ajax({
-            url:$(this).data('href'),
-            type:'get',
-            dataType: 'html',
-            success:function (data) {
-                console.log('success');
-                $(this).parent().next().append(data)
-            }
-        })
-    })
 });

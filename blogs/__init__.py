@@ -8,8 +8,8 @@ from flask_wtf.csrf import CSRFError
 from flask_login import current_user
 
 from blogs.settings import config
-from blogs.extensions import db, csrf, migrate, moment, mail, bootstrap, avatars, login_manager, files, ckeditor, \
-    whooshee
+from blogs.extensions import db, csrf, migrate, moment, mail, bootstrap, avatars, login_manager, ckeditor, \
+    whooshee, dropzone
 from blogs.blueprints.main import main_bp
 from blogs.blueprints.ajax import ajax_bp
 from blogs.blueprints.auth import auth_bp
@@ -31,10 +31,6 @@ def create_app(config_name=None):
     app.config.from_object(config[config_name])
 
     app.config['WTF_I18N_ENABLED'] = False
-
-    #配置flask-uploads
-    configure_uploads(app, files)
-    patch_request_class(app)  # 限制文件大小，默认16M
 
     register_extensions(app)
     register_blueprints(app)
@@ -58,6 +54,7 @@ def register_extensions(app):
     avatars.init_app(app)
     ckeditor.init_app(app)
     whooshee.init_app(app)
+    dropzone.init_app(app)
 
     @login_manager.user_loader
     def load_user(user_id):

@@ -1,8 +1,0 @@
-<div class="fileList">
-    <p class="inline">{{ filename}}</p>&nbsp;&nbsp;
-    <a class="inline text-danger btn" id="del-btn"
-            data-href="{{ url_for('ajax.delete_file',filename=filename) }}">删除</a><br>
-    {% if filename.rsplit('.', 1)[1] in ['jpg', 'png', 'jpeg', 'gif', 'PNG', 'bmp'] %}
-        <img src="{{ url_for('main.get_file', filename=filename) }}" class="little_photo">
-    {% endif %}
-</div>

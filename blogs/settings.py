@@ -12,7 +12,7 @@ class Operations:
 class BaseConfig(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
 
-    MAX_CONTENT_LENGTH = 3 * 1024 * 1024
+    MAX_CONTENT_LENGTH = 10 * 1024 * 1024
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_RECORD_QUERIES = True
@@ -56,6 +56,14 @@ class BaseConfig(object):
     MANAGE_NEWS_PER_PAGE = 20
 
     WHOOSHEE_MIN_STRING_LEN = 2  #搜索限制字符设定
+
+    DROPZONE_ENABLE_CSRF = True
+    DROPZONE_INVALID_FILE_TYPE = '文件类型错误'
+    DROPZONE_FILE_TOO_BIG = '上传的文件太大：{{filesize}}M;最大：{{maxFilesize}}M.'
+    DROPZONE_SERVER_ERROR = '服务器端错误：{{statusCode}}'
+    DROPZONE_MAX_FILE_EXCEED = '超出最大上传数量'
+    DROPZONE_MAX_FILE_SIZE = 10
+    DROPZONE_DEFAULT_MESSAGE = '拖拽或者点击这里上传附件'
 
 
 class DevelopmentConfig(BaseConfig):

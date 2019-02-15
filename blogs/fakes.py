@@ -1,7 +1,4 @@
-import os
 import random
-import uuid
-import time
 from faker import Faker
 from sqlalchemy.exc import IntegrityError
 

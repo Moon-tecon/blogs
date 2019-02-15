@@ -3,11 +3,10 @@ from flask_login import current_user, login_required
 import os
 import time
 
-from blogs.models.blogs import File, Post, Group, User, Notification, Topic, Notice, Read
+from blogs.models.blogs import File, Post, Group, User, Notification, Topic, Read
 from blogs.extensions import db
-from blogs.blueprints.ajax import file_list
 from blogs.forms.main import PostForm
-from blogs.utils import redirect_back, flash_errors
+from blogs.utils import redirect_back, resize_image
 from blogs.noticifations import push_post_notification, push_collect_notification, push_notice_notification, \
     push_max_reported_post_notification, push_max_reported_topic_notification
 from blogs.decorators import permission_required, confirm_required
@@ -44,10 +43,6 @@ def new_topic(group_id):
         body = form.body.data
         topic = Topic(name=title, body=body, group_id=group_id, author=current_user._get_current_object())
         db.session.add(topic)
-        for filename in file_list:
-            file = File.query.filter_by(filename=filename).first()
-            file.topic_id = topic.id
-        del file_list[:]
         if form.publish.data:
             current_user.read(topic)  # 标记自己发表的文章为已读
             db.session.commit()
@@ -60,6 +55,11 @@ def new_topic(group_id):
             db.session.commit()
             flash('主题已保存', 'success')
             return redirect(url_for('user.draft_topic'))
+        elif form.save1.data:
+            topic.saved = True
+            db.session.commit()
+            flash('请上传附件', 'info')
+            return redirect(url_for('.upload_topic', topic_id=topic.id))
     return render_template('main/new_topic.html', form=form, group=group)
 
 
@@ -107,10 +107,6 @@ def new_post(topic_id):
         body = form.body.data
         post = Post(title=title, body=body, topic=topic, author=current_user._get_current_object())
         db.session.add(post)
-        for filename in file_list:
-            file = File.query.filter_by(filename=filename).first()
-            file.post_id = post.id
-        del file_list[:]
         if form.publish.data:
             reads = Read.query.filter(Read.reader_id != current_user.id).all()
             if reads:
@@ -131,6 +127,11 @@ def new_post(topic_id):
             db.session.commit()
             flash('帖子已保存', 'success')
             return redirect(url_for('user.draft_post'))
+        elif form.save1.data:
+            post.saved = True
+            db.session.commit()
+            flash('请上传附件', 'info')
+            return redirect(url_for('.upload_post', post_id=post.id))
     form.title.data = 'Re:'+topic.name
     return render_template('main/new_post.html', form=form, topic=topic)
 
@@ -245,10 +246,6 @@ def reply_post(replied_id):
                     topic_id=replied.topic_id,
                     replied_id=replied_id)
         db.session.add(post)
-        for filename in file_list:
-            file = File.query.filter_by(filename=filename).first()
-            file.post_id = post.id
-        del file_list[:]
         if form.publish.data:
             reads = Read.query.filter(Read.reader_id != current_user.id).all()
             if reads:
@@ -269,6 +266,11 @@ def reply_post(replied_id):
             db.session.commit()
             flash('帖子已保存', 'success')
             return redirect(url_for('user.draft_post'))
+        elif form.save1.data:
+            post.saved = True
+            db.session.commit()
+            flash('请上传附件', 'info')
+            return redirect(url_for('.upload_post', post_id=post.id))
     form.title.data = 'Re：'+replied.title
     return render_template('main/reply_post.html', form=form, replied=replied)
 
@@ -338,10 +340,6 @@ def edit_post(post_id):
     if form.validate_on_submit():
         post.title = form.title.data
         post.body = form.body.data
-        for filename in file_list:
-            file = File.query.filter_by(filename=filename).first()
-            file.post_id = post.id
-        del file_list[:]
         if form.publish.data:
             post.saved = False
             db.session.commit()
@@ -359,6 +357,11 @@ def edit_post(post_id):
             db.session.commit()
             flash('帖子已保存', 'success')
             return redirect(url_for('user.draft_post'))
+        elif form.save1.data:
+            post.saved = True
+            db.session.commit()
+            flash('请上传附件', 'info')
+            return redirect(url_for('.upload_post', post_id=post.id))
     form.title.data = post.title
     form.body.data = post.body
     return render_template('main/edit_post.html', form=form, post=post)
@@ -375,10 +378,6 @@ def edit_topic(topic_id):
     if form.validate_on_submit():
         topic.name = form.title.data
         topic.body = form.body.data
-        for filename in file_list:
-            file = File.query.filter_by(filename=filename).first()
-            file.topic_id = topic.id
-        del file_list[:]
         if form.publish.data:
             current_user.read(topic)  # 标记自己发表的文章为已读
             topic.saved = False
@@ -397,6 +396,12 @@ def edit_topic(topic_id):
                 db.session.commit()
                 flash('主题已保存', 'success')
                 return redirect(url_for('user.draft_topic'))
+        elif form.save1.data:
+            topic.saved = True
+            topic.top = False
+            db.session.commit()
+            flash('请上传附件', 'info')
+            return redirect(url_for('.upload_topic', topic_id=topic.id))
     form.title.data = topic.name
     form.body.data = topic.body
     return render_template('main/edit_topic.html', form=form, topic=topic)
@@ -532,3 +537,69 @@ def cancel_top_topic(topic_id):
     db.session.commit()
     flash('主题已取消置顶。', 'success')
     return redirect_back()
+
+
+@main_bp.route('/upload/topic/<int:topic_id>', methods=['GET', 'POST'])
+@login_required
+@confirm_required
+def upload_topic(topic_id):
+    topic = Topic.query.get_or_404(topic_id)
+    if current_user != topic.author and current_user != topic.group.admin and not current_user.can('MODERATE'):
+        abort(403)
+    if request.method == 'POST' and 'file' in request.files:
+        f = request.files.get('file')
+        filename = f.filename
+        f.save(os.path.join(current_app.config['UPLOAD_PATH'], filename))
+        filename_s = None
+        if filename.rsplit('.', 1)[1] in ['jpg', 'png', 'jpeg', 'gif', 'PNG', 'bmp']:
+            filename_s = resize_image(request.files['file'], filename, current_app.config['PHOTO_SIZE']['small'])
+        file = File(filename=filename, filename_s=filename_s, topic_id=topic_id)
+        db.session.add(file)
+        db.session.commit()
+    return render_template('main/upload_topic.html', topic=topic)
+
+
+@main_bp.route('/upload/post/<int:post_id>', methods=['GET', 'POST'])
+@login_required
+@confirm_required
+def upload_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if current_user != post.author and current_user != post.topic.group.admin and not current_user.can('MODERATE'):
+        abort(403)
+    if request.method == 'POST' and 'file' in request.files:
+        f = request.files.get('file')
+        filename = f.filename
+        f.save(os.path.join(current_app.config['UPLOAD_PATH'], filename))
+        filename_s = None
+        if filename.rsplit('.', 1)[1] in ['jpg', 'png', 'jpeg', 'gif', 'PNG', 'bmp']:
+            filename_s = resize_image(request.files['file'], filename, current_app.config['PHOTO_SIZE']['small'])
+        file = File(filename=filename, filename_s=filename_s, post_id=post_id)
+        db.session.add(file)
+        db.session.commit()
+    return render_template('main/upload_post.html', post=post)
+
+
+@main_bp.route('/publish/topic/<int:topic_id>', methods=['POST'])
+@login_required
+@confirm_required
+def publish_topic(topic_id):
+    topic = Topic.query.get_or_404(topic_id)
+    if current_user != topic.author and current_user != topic.group.admin and not current_user.can('MODERATE'):
+        abort(403)
+    topic.saved = False
+    db.session.commit()
+    flash('主题已发表', 'success')
+    return redirect(url_for('.show_topic', topic_id=topic_id))
+
+
+@main_bp.route('/publish/post/<int:post_id>', methods=['POST'])
+@login_required
+@confirm_required
+def publish_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if current_user != post.author and current_user != post.topic.group.admin and not current_user.can('MODERATE'):
+        abort(403)
+    post.saved = False
+    db.session.commit()
+    flash('帖子已发表', 'success')
+    return redirect(url_for('.show_post', post_id=post_id))

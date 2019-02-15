@@ -1,9 +1,10 @@
 {% macro file_area(file) %}
     <div class="fileMessage">
         <a href="{{ url_for('main.get_file', filename=file.filename)}}">{{ file.filename }}</a><br>
-        <p class="small"><a href="{{ url_for('main.get_file', filename=file.filename)}}"
+        <p class="small">
+            <a href="{{ url_for('main.get_file', filename=file.filename)}}" class="text-dark"
               download="{{ filename}}"><span class="oi oi-data-transfer-download"></span> 下载</a>&nbsp;&nbsp;
-            <a href="{{ url_for('main.get_file', filename=file.filename)}}" target="_blank">
+            <a href="{{ url_for('main.get_file', filename=file.filename)}}" target="_blank" class="text-dark">
                 <span class="oi oi-list"></span>详情</a>&nbsp;&nbsp;
             {% if current_user==file.post.author or current_user.can('MODERATE') or current_user==file.topic.author%}
                 <a data-toggle="modal" data-target="#confirm-delete" href="#!"

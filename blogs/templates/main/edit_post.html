@@ -1,5 +1,5 @@
 {% extends'main/basic.html' %}
-{% from 'bootstrap/form.html' import render_form %}
+{% from 'bootstrap/form.html' import render_field %}
 {% from 'macros.html' import file_display with context %}
 
 {% block title %}编辑{{ post.title }}{% endblock %}
@@ -20,8 +20,18 @@
 
 {% block base_content%}
     <div class="card w-100 bg-light">
+        <h4 class="card-header">编辑({{ post.title }})</h4>
         <div class="card-body">
-            {{ render_form(form) }}
+            <form action="{{ url_for('main.edit_post', post_id=post.id) }}" method="post">
+                {{ form.csrf_token }}
+                {{ render_field(form.title) }}
+                {{ render_field(form.body) }}
+                {{ render_field(form.notice) }}
+                {{ render_field(form.publish, class='btn btn-outline-success float-right') }}
+                {{ render_field(form.save, class='btn btn-outline-primary float-right') }}
+                {{ render_field(form.save1, class='btn btn-outline-primary float-left') }}
+            </form>
+            <div class="clear_float"></div>
             {% if post.files %}
                 <div class="border border-light">
                     <h4>附件：</h4>
@@ -30,12 +40,6 @@
                     {% endfor %}
                 </div>
             {% endif %}
-            <br>
-            <a class="btn btn-primary adjunct" href="#!"><span class="oi oi-paperclip"></span> 附件</a>
-            <form enctype="multipart/form-data" id="upload-fm" hidden>
-                <input type="file" name="file" id="upload_input" value="">
-            </form>
-            <div class="clear_float"></div>
         </div>
     </div>
 {% endblock %}

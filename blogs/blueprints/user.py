@@ -1,6 +1,5 @@
 from flask import Blueprint, request, current_app, render_template, flash, redirect, url_for, abort
 from flask_login import current_user, logout_user, login_required, fresh_login_required
-import os
 
 from blogs.models.blogs import User, Post, Collect, Notice, Topic, Notification
 from blogs.forms.user import EditProfileForm, CropAvatarForm, UploadAvatarForm, ChangePasswordForm, \

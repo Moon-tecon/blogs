@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, SelectField, StringField, BooleanField
-from wtforms.validators import Optional, Length, DataRequired, ValidationError
+from wtforms import SubmitField, StringField, BooleanField
+from wtforms.validators import Length, DataRequired
 from flask_ckeditor import CKEditorField
 
 
@@ -10,3 +10,4 @@ class PostForm(FlaskForm):
     notice = BooleanField('有人回复时，给我发送一封Email')
     save = SubmitField('保存草稿')
     publish = SubmitField('发布')
+    save1 = SubmitField('附件')
