@@ -6,7 +6,7 @@ import time
 from blogs.models.blogs import File, Post, Group, User, Notification, Topic, Read
 from blogs.extensions import db
 from blogs.forms.main import PostForm
-from blogs.utils import redirect_back, resize_image
+from blogs.utils import redirect_back, resize_image, rename_image
 from blogs.noticifations import push_post_notification, push_collect_notification, push_notice_notification, \
     push_max_reported_post_notification, push_max_reported_topic_notification
 from blogs.decorators import permission_required, confirm_required
@@ -549,6 +549,8 @@ def upload_topic(topic_id):
     if request.method == 'POST' and 'file' in request.files:
         f = request.files.get('file')
         filename = f.filename
+        if os.path.exists(os.path.join(current_app.config['UPLOAD_PATH'], filename)):
+            filename = rename_image(filename)
         f.save(os.path.join(current_app.config['UPLOAD_PATH'], filename))
         filename_s = None
         if filename.rsplit('.', 1)[1] in ['jpg', 'png', 'jpeg', 'gif', 'PNG', 'bmp']:
@@ -569,6 +571,8 @@ def upload_post(post_id):
     if request.method == 'POST' and 'file' in request.files:
         f = request.files.get('file')
         filename = f.filename
+        if os.path.exists(os.path.join(current_app.config['UPLOAD_PATH'], filename)):
+            filename = rename_image(filename)
         f.save(os.path.join(current_app.config['UPLOAD_PATH'], filename))
         filename_s = None
         if filename.rsplit('.', 1)[1] in ['jpg', 'png', 'jpeg', 'gif', 'PNG', 'bmp']:

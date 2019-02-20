@@ -90,6 +90,10 @@ def flash_errors(form):
 
 
 def rename_image(old_filename):
-    ext = os.path.splitext(old_filename)[1]
-    new_filename = uuid.uuid4().hex + ext
-    return new_filename
+    name, ext = os.path.splitext(old_filename)
+    count = 0
+    while True:
+        count = count + 1
+        filename = '%s_%d%s' % (name, count, ext)
+        if not os.path.exists(os.path.join(current_app.config['UPLOAD_PATH'], filename)):
+            return filename

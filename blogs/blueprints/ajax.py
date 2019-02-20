@@ -5,8 +5,6 @@ from blogs.models.blogs import User, Notification
 
 ajax_bp = Blueprint('ajax', __name__)
 
-file_list = []
-
 
 @ajax_bp.route('/get_profile/<int:user_id>')
 def get_profile(user_id):

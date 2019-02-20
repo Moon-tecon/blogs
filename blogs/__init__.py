@@ -3,7 +3,6 @@ import click
 import logging
 from logging.handlers import RotatingFileHandler, SMTPHandler
 from flask import Flask, render_template, request
-from flask_uploads import configure_uploads, patch_request_class
 from flask_wtf.csrf import CSRFError
 from flask_login import current_user
 
