@@ -57,6 +57,11 @@ class BaseConfig(object):
 
     WHOOSHEE_MIN_STRING_LEN = 2  #搜索限制字符设定
 
+    CKEDITOR_SERVE_LOCAL = True
+    CKEDITOR_HEIGHT = 600
+    CKEDITOR_FILE_UPLOADER = 'upload'
+    CKEDITOR_ENABLE_CSRF = True
+
     DROPZONE_ENABLE_CSRF = True
     DROPZONE_INVALID_FILE_TYPE = '文件类型不符合规定'
     DROPZONE_FILE_TOO_BIG = '上传的文件太大：{{filesize}}M;最大：{{maxFilesize}}M.'

@@ -2,6 +2,7 @@ from flask import render_template, Blueprint, send_from_directory, current_app, 
 from flask_login import current_user, login_required
 import os
 import time
+from flask_ckeditor import upload_success, upload_fail
 
 from blogs.models.blogs import File, Post, Group, User, Notification, Topic, Read
 from blogs.extensions import db
@@ -139,6 +140,18 @@ def new_post(topic_id):
 @main_bp.route('/uploads/<path:filename>')
 def get_file(filename):
     return send_from_directory(current_app.config['UPLOAD_PATH'], filename)
+
+
+@main_bp.route('/upload', methods=['POST'])
+def upload():
+    f = request.files.get('upload')  # 获取上传图片文件对象
+    # Add more validations here
+    extension = f.filename.split('.')[1].lower()
+    if extension not in ['jpg', 'gif', 'png', 'jpeg']:  # 验证文件类型示例
+        return upload_fail(message='只能上传图片！')  # 返回upload_fail调用
+    f.save(os.path.join(current_app.config['UPLOAD_PATH'], f.filename))
+    url = url_for('get_file', filename=f.filename)
+    return upload_success(url=url) # 返回upload_success调用
 
 
 @main_bp.route('/post/<int:post_id>', methods=['POST', 'GET'])
