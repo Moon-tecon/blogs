@@ -169,3 +169,8 @@ nav {
     max-width: 300px;
     border: 0;
 }
+
+.overflow {
+    width: auto;
+    overflow: auto;
+}

@@ -54,7 +54,7 @@
                 {{ moment(topic.timestamp).format('llll') }}</span>
         </div>
     </div>
-    {{ topic.body|safe }}
+    <div class="overflow">{{ topic.body|safe }}</div>
     {% if topic.files %}
         <div class="border border-light">
             <h4>附件：</h4>

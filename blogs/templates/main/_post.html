@@ -62,7 +62,7 @@
         </blockquote>
     {% endif %}
     <h5>{{ post.title }}</h5>
-    {{ post.body|safe }}
+    <div class="overflow">{{ post.body|safe }}</div>
     {% if post.files %}
         <div class="border border-light">
             <h4>附件：</h4>

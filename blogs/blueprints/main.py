@@ -3,6 +3,7 @@ from flask_login import current_user, login_required
 import os
 import time
 from flask_ckeditor import upload_success, upload_fail
+import uuid
 
 from blogs.models.blogs import File, Post, Group, User, Notification, Topic, Read
 from blogs.extensions import db
@@ -145,13 +146,16 @@ def get_file(filename):
 @main_bp.route('/upload', methods=['POST'])
 def upload():
     f = request.files.get('upload')  # 获取上传图片文件对象
-    # Add more validations here
     extension = f.filename.split('.')[1].lower()
     if extension not in ['jpg', 'gif', 'png', 'jpeg']:  # 验证文件类型示例
         return upload_fail(message='只能上传图片！')  # 返回upload_fail调用
-    f.save(os.path.join(current_app.config['UPLOAD_PATH'], f.filename))
-    url = url_for('get_file', filename=f.filename)
-    return upload_success(url=url) # 返回upload_success调用
+    filename = uuid.uuid4().hex + '.' + extension
+    if os.path.exists(os.path.join(current_app.config['UPLOAD_PATH'], filename)):
+        filename = rename_image(filename)
+    f.save(os.path.join(current_app.config['UPLOAD_PATH'], filename))
+    resize_image(request.files['upload'], filename, current_app.config['PHOTO_SIZE']['medium'])
+    url = url_for('.get_file', filename=filename)
+    return upload_success(url, filename) # 返回upload_success调用
 
 
 @main_bp.route('/post/<int:post_id>', methods=['POST', 'GET'])

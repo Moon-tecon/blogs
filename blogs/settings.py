@@ -40,8 +40,9 @@ class BaseConfig(object):
     AVATARS_SAVE_PATH = os.path.join(UPLOADS_DEFAULT_DEST, 'avatars')
     AVATARS_SIZE_TUPLE = (30, 60, 150)
 
-    PHOTO_SIZE = {'small': 300}
-    PHOTO_SUFFIX = {PHOTO_SIZE['small']: '_s'}  # thumbnail
+    PHOTO_SIZE = {'small': 300, 'medium':750}
+    PHOTO_SUFFIX = {PHOTO_SIZE['small']: '_s',
+                    PHOTO_SIZE['medium']: ''}  # thumbnail
 
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret string')
 
@@ -57,9 +58,7 @@ class BaseConfig(object):
 
     WHOOSHEE_MIN_STRING_LEN = 2  #搜索限制字符设定
 
-    CKEDITOR_SERVE_LOCAL = True
-    CKEDITOR_HEIGHT = 600
-    CKEDITOR_FILE_UPLOADER = 'upload'
+    CKEDITOR_FILE_UPLOADER = 'main.upload'
     CKEDITOR_ENABLE_CSRF = True
 
     DROPZONE_ENABLE_CSRF = True
