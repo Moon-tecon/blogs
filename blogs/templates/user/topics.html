@@ -29,7 +29,7 @@
                     <td>{{ topic.read_time }}</td>
                     <td>{{ topic.receivers|length }}</td>
                     <td class="text-muted">
-                        {% if topic.posts %}
+                        {% if topic.get_last_post() %}
                             由<a class="profile-popover"
                                data-href="{{ url_for('ajax.get_profile', user_id=topic.get_last_post().author_id) }}"
                                     href="{{ url_for('user.index', username=topic.get_last_post().author.username) }}">

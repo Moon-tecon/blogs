@@ -78,7 +78,7 @@
                     <td>{{ topic.get_post_count() }}</td>
                     <td>{{ topic.read_time }}</td>
                     <td class="text-muted">
-                        {% if not topic.posts %}
+                        {% if not topic.get_last_post() %}
                             由<a class="profile-popover" href="{{ url_for('user.index', username=topic.author.username) }}"
                                 data-href="{{ url_for('ajax.get_profile', user_id=topic.author_id) }}">
                             {{ topic.author.username }}</a>发布<br>

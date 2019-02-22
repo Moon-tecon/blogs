@@ -189,7 +189,9 @@ class Topic(db.Model):
     def get_last_post(self):
         if self.posts:
             last_post = Post.query.with_parent(self).filter_by(saved=False).order_by(Post.timestamp.desc()).first()
-            return last_post
+        else:
+            last_post = None
+        return last_post
 
     def get_post_count(self):
         post_count = Post.query.with_parent(self).filter_by(saved=False).count()
