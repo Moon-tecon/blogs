@@ -21,7 +21,8 @@
             主题:<span class="badge badge-info">{{ group.get_topic_count() }}</span>
         </span>
         {% if group.status_id !=2 or current_user.can('MEMBER') %}
-            <a href="{{ url_for('main.new_topic', group_id=group.id) }}" class="btn btn-primary">
+            <a href="{{ url_for('main.new_topic', group_id=group.id) }}"
+               class="btn btn-primary {% if group.id == 6%}disabled{% endif %}" role="button">
                 发帖<span class="oi oi-pencil"></span> </a>
         {% endif %}
     </div>

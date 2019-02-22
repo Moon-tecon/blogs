@@ -32,6 +32,8 @@ def index():
 @login_required
 @confirm_required
 def new_topic(group_id):
+    if group_id == 6:
+        abort(403)
     group = Group.query.get_or_404(group_id)
     if group.status_id == 1 and not current_user.can('MEMBER'):
         abort(403)

@@ -181,10 +181,13 @@ def new_group():
 @login_required
 @permission_required('MODERATE')
 def delete_group(group_id):
-    group = Group.query.get_or_404(group_id)
-    db.session.delete(group)
-    db.session.commit()
-    flash('小组已删除', 'success')
+    if group_id == 6:
+        flash('不可删除', 'danger')
+    else:
+        group = Group.query.get_or_404(group_id)
+        db.session.delete(group)
+        db.session.commit()
+        flash('小组已删除', 'success')
     return redirect_back()
 
 

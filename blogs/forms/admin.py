@@ -33,7 +33,7 @@ class NewGroupForm(FlaskForm):
     admin = StringField('小组管理员用户名', validators=[Optional(), Length(1, 30)])
     status = SelectField('级别*', coerce=int, default=1)
     intro = TextAreaField('简介', validators=[Length(0, 500), Optional()])
-    submit = SubmitField('增加')
+    submit = SubmitField('提交')
 
     def __init__(self, *args, **kwargs):
         super(NewGroupForm, self).__init__(*args, **kwargs)

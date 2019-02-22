@@ -83,7 +83,7 @@ def register_logger(app):
     mail_handler = SMTPHandler(
         mailhost=os.getenv('MAIL_SERVER'),
         fromaddr=os.getenv('MAIL_USERNAME'),
-        toaddrs=os.getenv('ADMIN_EMAIL'),
+        toaddrs=os.getenv('PROJECT_ADMIN'),
         subject='Tecon Forum Application Error',
         credentials=(os.getenv('MAIL_USERNAME'), os.getenv('MAIL_PASSWORD')))
     mail_handler.setLevel(logging.ERROR)
@@ -138,7 +138,8 @@ def register_template_context(app):
             notification_count = None
         introduces = Item.query.filter_by(saved=False, series_id=1).order_by(Item.name).all()
         products = Item.query.filter_by(saved=False, series_id=2).order_by(Item.name).all()
-        return dict(notification_count=notification_count, introduces=introduces, products=products)
+        group6 = Group.query.get_or_404(6)
+        return dict(notification_count=notification_count, introduces=introduces, products=products, group6=group6)
 
 
 def register_commands(app):
