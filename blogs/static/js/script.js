@@ -125,4 +125,8 @@ $(function () {
 
     $("[data-toggle='tooltip']").tooltip({title: moment($(this).data('timestamp')).format('lll')});
 
+    $('img').on("error", function() {
+        $(this).attr('src', '/static/imgs/default.jpg');  // 替换为默认图片
+         });
+
 });
